@@ -4,6 +4,6 @@
     "callback_class": "CMTV\\Math\\EventListener",
     "callback_method": "editorDialog",
     "active": true,
-    "hint": "CMTVMath",
+    "hint": "CMTV_Math",
     "description": "Registreting dialog for \"Insert math\" button"
 }

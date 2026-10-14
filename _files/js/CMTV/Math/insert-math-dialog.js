@@ -1,17 +1,17 @@
 var CMTV_Math = window.CMTV_Math || {};
 
-!function ($, window, document)
+!function (window, document)
 {
     "use strict";
 
     CMTV_Math.InsertMathForm = XF.Element.newHandler({
-        $type: null,
-        $latexInput: null,
-        $loading: null,
-        $previewContainer: null,
-        $preview: null,
-        $previewError: null,
-        $previewEmpty: null,
+        types: null,
+        latexInput: null,
+        loading: null,
+        previewContainer: null,
+        preview: null,
+        previewError: null,
+        previewEmpty: null,
 
         state: 'empty', // States: "empty", "error", "preview"
         resetMode: false,
@@ -21,23 +21,23 @@ var CMTV_Math = window.CMTV_Math || {};
 
         typeVal: function ()
         {
-            return this.$target.find('[name="math_type"]:checked').val();
+            return this.target.querySelector('[name="math_type"]:checked').value;
         },
 
         init: function ()
         {
-            this.$type =                this.$target.find('[name="math_type"]');
-            this.$latexInput =          this.$target.find('[name="latex_input"]');
-            this.$loading =             this.$target.find('.preview-loading');
-            this.$previewContainer =    this.$target.find('.preview-container');
-            this.$preview =             this.$target.find('.preview');
-            this.$previewError =        this.$target.find('.error');
-            this.$previewEmpty =        this.$target.find('.empty');
+            this.types =                this.target.querySelectorAll('[name="math_type"]');
+            this.latexInput =           this.target.querySelector('[name="latex_input"]');
+            this.loading =              this.target.querySelector('.preview-loading');
+            this.previewContainer =     this.target.querySelector('.preview-container');
+            this.preview =              this.target.querySelector('.preview');
+            this.previewError =         this.target.querySelector('.error');
+            this.previewEmpty =         this.target.querySelector('.empty');
 
-            this.$type.on('change', XF.proxy(this, 'onTypeChange'));
-            this.$latexInput.on('input', XF.proxy(this, 'onLatexInput'));
+            this.types.forEach(type => XF.on(type, 'change', this.onTypeChange.bind(this)));
+            XF.on(this.latexInput, 'input', this.onLatexInput.bind(this));
 
-            this.$target.on('form:reset', XF.proxy(this, 'reset'));
+            XF.on(this.target, 'form:reset', this.reset.bind(this));
 
             this.setState('empty');
         },
@@ -57,7 +57,7 @@ var CMTV_Math = window.CMTV_Math || {};
 
             if (!this.resetMode)
             {
-                this._typeTimeout = setTimeout(XF.proxy(this, 'updatePreview'), 450);
+                this._typeTimeout = setTimeout(this.updatePreview.bind(this), 450);
             }
         },
 
@@ -66,13 +66,12 @@ var CMTV_Math = window.CMTV_Math || {};
             this.fadeOut();
 
             clearTimeout(this._fadeOutTimeout);
-            this._typeTimeout = setTimeout(XF.proxy(this, 'changePreview'), 200);
+            this._typeTimeout = setTimeout(this.changePreview.bind(this), 200);
         },
 
         changePreview: function ()
         {
-            var linput = this.$latexInput.val().trim(),
-                that = this;
+            var linput = this.latexInput.value.trim();
 
             if (!linput.length)
             {
@@ -81,13 +80,12 @@ var CMTV_Math = window.CMTV_Math || {};
                 return;
             }
 
-            var toRender = this.wrapMath(linput);
-
-            this.$preview.html(toRender);
+            // Plain text: auto-render only looks at text nodes, and the input must not be parsed as HTML
+            this.preview.textContent = this.wrapMath(linput);
 
             this.setState('preview');
 
-            renderMathInElement(this.$preview.get(0), Object.assign(CMTV_MATH_RENDER_OPTIONS, { errorCallback: () => this.setState('error') }));
+            renderMathInElement(this.preview, Object.assign({}, CMTV_MATH_RENDER_OPTIONS, { errorCallback: () => this.setState('error') }));
             this.fadeIn();
         },
 
@@ -124,23 +122,23 @@ var CMTV_Math = window.CMTV_Math || {};
 
         fadeIn: function ()
         {
-            this.$loading.removeClass('showing');
-            this.$previewContainer.addClass('showing');
+            this.loading.classList.remove('showing');
+            this.previewContainer.classList.add('showing');
         },
 
         fadeOut: function ()
         {
-            this.$loading.addClass('showing');
-            this.$previewContainer.removeClass('showing');
+            this.loading.classList.add('showing');
+            this.previewContainer.classList.remove('showing');
         },
 
         setState: function (state)
         {
-            this.$preview.hide();
-            this.$previewError.hide();
-            this.$previewEmpty.hide();
+            XF.display(this.preview, 'none');
+            XF.display(this.previewError, 'none');
+            XF.display(this.previewEmpty, 'none');
 
-            this.stateVar(state).show();
+            XF.display(this.stateVar(state));
 
             this.state = state;
         },
@@ -150,11 +148,11 @@ var CMTV_Math = window.CMTV_Math || {};
             switch (state)
             {
                 case 'empty':
-                    return this.$previewEmpty;
+                    return this.previewEmpty;
                 case 'error':
-                    return this.$previewError;
+                    return this.previewError;
                 case 'preview':
-                    return this.$preview;
+                    return this.preview;
             }
         },
 
@@ -162,8 +160,8 @@ var CMTV_Math = window.CMTV_Math || {};
         {
             this.resetMode = true;
 
-            this.$target.find('[name="math_type"][value="block"]').trigger('click');
-            this.$latexInput.val('');
+            this.target.querySelector('[name="math_type"][value="block"]').checked = true;
+            this.latexInput.value = '';
             this.updatePreview();
 
             this.resetMode = false;
@@ -172,4 +170,4 @@ var CMTV_Math = window.CMTV_Math || {};
 
     XF.Element.register('insert-math-form', 'CMTV_Math.InsertMathForm');
 }
-(jQuery, window, document);
+(window, document);

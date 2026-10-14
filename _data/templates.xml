@@ -13,14 +13,14 @@
 				   class="codeEditor--autoSize"
 				   rowtype="fullWidth noLabel" />
 </xf:formrow>]]></template>
-  <template type="public" title="CMTV_Math.less" version_id="3000170" version_string="3.0.1"><![CDATA[//
+  <template type="public" title="CMTV_Math.less" version_id="3020070" version_string="3.2.0"><![CDATA[//
 // Katex settings
 //
 
  .katex-display
 {
 	margin: 0 !important;
-	.base { margin: 15px/2.2 0; }
+	.katex-base { margin: (15px / 2.2) 0; }
 	
 	overflow: hidden;
     overflow-x: auto;
@@ -138,7 +138,7 @@
 		<xf:submitrow submit="{{ phrase('continue') }}" id="editor_math_submit" />
 	</div>
 </form>]]></template>
-  <template type="public" title="CMTV_Math_js" version_id="3000170" version_string="3.0.1"><![CDATA[<script>
+  <template type="public" title="CMTV_Math_js" version_id="3020070" version_string="3.2.0"><![CDATA[<script>
 	const CMTV_MATH_RENDER_OPTIONS =
 	{
 		"delimiters":
@@ -152,17 +152,30 @@
 		"macros": {{ $xf.options.CMTV_Math_macros ? $xf.options.CMTV_Math_macros|raw : '{}' }}
 	};
 	
-	(function ($, document)
+	window.addEventListener('DOMContentLoaded', function ()
 	{
-		$(document).on('xf:reinit', function (e)
+		XF.on(document, 'xf:reinit', function (e)
 		{
 			renderMathInElement(document.body, CMTV_MATH_RENDER_OPTIONS);
 		});
-	})
-	(jQuery, document);
+	});
 </script>]]></template>
-  <template type="public" title="CMTV_Math_katex" version_id="1000070" version_string="1.0.0"><![CDATA[<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" crossorigin="anonymous">
+  <template type="public" title="CMTV_Math_katex" version_id="3020070" version_string="3.2.0"><![CDATA[<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/katex.min.css" integrity="sha384-3rdsX6e5mueWyoweR9NIVmtEsUkokpBT/0ALqKKIBMr9j4qhHkaIkAcGgsE6uVlp" crossorigin="anonymous">
 
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" crossorigin="anonymous"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>]]></template>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/katex.min.js" integrity="sha384-QFFtAGzvvj+bfgCGxXJlNZZR1nXEZgvG8tDLCCY1F19xl20WlfTYgguB4VcNdxYk" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/contrib/auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous"></script>]]></template>
+  <template type="public" title="CMTV_Math_macros" version_id="3020070" version_string="3.2.0"><![CDATA[<script>
+const CMTV_MATH_MACROS =
+{
+	//
+	// Your custom math shortcuts and macroses goes below
+	//
+	
+	// Shortcut example (short version to write limit for sequences, where n goes to infinity)
+	//"\\limn":   "\\lim\\limits_{n\\to\\infty}",
+	
+	// Macros with one parameter example (floor of the number)
+	//"\\floor":  "\\left\\lfloor #1 \\right\\rfloor",
+};
+</script>]]></template>
 </templates>
