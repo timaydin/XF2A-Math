@@ -5,6 +5,7 @@
 
 /**
  * @noinspection PhpIllegalPsrClassPathInspection
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 
 namespace CMTV\Math\XF\Service\Message
